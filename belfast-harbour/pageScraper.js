@@ -1,3 +1,4 @@
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms))
 export const scraperObject = {
   async loadInitialWebPage(browserInstance, urlString) {
     // Load initial Web page
@@ -39,10 +40,45 @@ export const scraperObject = {
     }
   },
 
-  // return page
   // ------------------------------------------------------------------
 
-  // Close the browser
-  // await browser.close()
-  // },
+  async loadNextPages(pageInstance) {
+    let page = await pageInstance
+    let hasLoadMoreButton = true
+
+    // Now load more data
+    const loadMoreButtonString =
+      "#content > div > div > section.elementor-section.elementor-top-section.elementor-element.elementor-element-7999ad4.elementor-section-boxed.elementor-section-height-default.elementor-section-height-default > div > div > div > div.elementor-element.elementor-element-1397594.elementor-widget.elementor-widget-shortcode > div > div > div > button"
+
+    const loadMoreButton = await page.$(loadMoreButtonString)
+
+    while (hasLoadMoreButton)
+      try {
+        // Check if the Load More button is disabled or non-existent
+        const isLoadMoreButtonDisabled = await page.$eval(
+          loadMoreButtonString,
+          (button) => button.disabled
+        )
+
+        // If the Load More button exists then press it
+        if (isLoadMoreButtonDisabled) {
+          console.log(
+            "Load More button is disabled or missing, stopping navigation"
+          )
+          hasLoadMoreButton = false
+        } else {
+          // Click the Load More button
+          await loadMoreButton.click()
+          console.log("Load More button pressed")
+        }
+
+        // Wait for the page to load new content
+        await sleep(1000)
+      } catch {
+        console.log("Load More button not found, stopping navigation")
+        hasLoadMoreButton = false
+      }
+  },
+
+  // ------------------------------------------------------------------
 }

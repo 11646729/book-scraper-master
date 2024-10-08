@@ -1,7 +1,5 @@
 import { scraperObject } from "./pageScraper.js"
 
-const sleep = (ms) => new Promise((res) => setTimeout(res, ms))
-
 const scraperController = async (browserInstance) => {
   // Load initial Web page
   const urlString = "https://www.belfast-harbour.co.uk/port/cruise-schedule/"
@@ -12,49 +10,12 @@ const scraperController = async (browserInstance) => {
   )
 
   // Accept all cookies
-  // let pageVariable2 =
   scraperObject.acceptCookies(pageVariable)
 
-  // console.log(pageVariable2)
+  // Load all Next Pages
+  scraperObject.loadNextPages(pageVariable)
 
   // ------------------------------------------------------------------
-
-  // let hasLoadMoreButton = true
-
-  // // Now load more data
-  // const loadMoreButtonString =
-  //   "#content > div > div > section.elementor-section.elementor-top-section.elementor-element.elementor-element-7999ad4.elementor-section-boxed.elementor-section-height-default.elementor-section-height-default > div > div > div > div.elementor-element.elementor-element-1397594.elementor-widget.elementor-widget-shortcode > div > div > div > button"
-
-  // const loadMoreButton = await page.$(loadMoreButtonString)
-
-  // while (hasLoadMoreButton)
-  //   try {
-  //     // Check if the Load More button is disabled or non-existent
-  //     const isLoadMoreButtonDisabled = await page.$eval(
-  //       loadMoreButtonString,
-  //       (button) => button.disabled
-  //     )
-
-  //     // If the Load More button exists then press it
-  //     if (isLoadMoreButtonDisabled) {
-  //       console.log(
-  //         "Load More button is disabled or missing, stopping navigation"
-  //       )
-  //       hasLoadMoreButton = false
-  //     } else {
-  //       // Click the Load More button
-  //       await loadMoreButton.click()
-  //       console.log("Load More button pressed")
-  //     }
-
-  //     // Wait for the page to load new content
-  //     await sleep(1000)
-  //   } catch {
-  //     console.log("Load More button not found, stopping navigation")
-  //     hasLoadMoreButton = false
-  //   }
-
-  // // ------------------------------------------------------------------
 
   // // Wait for the table to load if necessary
   // await page.waitForSelector("#load_data")
