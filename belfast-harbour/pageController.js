@@ -6,19 +6,23 @@ const scraperController = async (browserInstance) => {
   const urlString = "https://www.belfast-harbour.co.uk/port/cruise-schedule/"
 
   // Load initial Web page
-  let pageVariable = pagePreparationObject.loadInitialWebPage(
+  let pageVariable = await pagePreparationObject.loadInitialWebPage(
     browserInstance,
     urlString
   )
 
   // Accept all cookies
-  pagePreparationObject.acceptCookies(pageVariable)
+  await pagePreparationObject.acceptCookies(pageVariable)
 
   // Load all Next Pages
-  pagePreparationObject.loadNextPages(pageVariable)
+  await pagePreparationObject.loadNextPages(pageVariable)
 
   // Scrape all the vessel details
-  pageScraperObject.scrapeVesselArrivalDetails(pageVariable)
+  let scrapedArray = await pageScraperObject.scrapeVesselArrivalDetails(
+    pageVariable
+  )
+
+  console.log(scrapedArray)
 
   // ------------------------------------------------------------------
 

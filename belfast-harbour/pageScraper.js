@@ -5,8 +5,10 @@ export const pageScraperObject = {
     // Wait for the table to load if necessary
     await page.waitForSelector("#load_data")
 
+    let tableData0 = {}
+
     // Scrape the table data
-    const tableData0 = await page.evaluate(() => {
+    tableData0 = await page.evaluate(() => {
       // Get all the rows from the table
       const rows0 = Array.from(
         document.querySelectorAll("#load_data tr:nth-child(4n+1)")
@@ -19,13 +21,15 @@ export const pageScraperObject = {
       })
     })
 
-    console.log(tableData0[0][0]) // DAY CALL or OVERNIGHT
-    console.log(tableData0[0][1]) // Arrival Date & Time
-    // console.log(tableData0[0][2]) // - (Can be ignored)
-    console.log(tableData0[0][3]) // Departure Date & Time
-    console.log(tableData0[0][4]) // Company
-    console.log(tableData0[0][5]) // Vessel Name
-    // console.log(tableData0[0][6]) // '' (Can be ignored)
+    return tableData0
+
+    // console.log(tableData0[0][0]) // DAY CALL or OVERNIGHT
+    // console.log(tableData0[0][1]) // Arrival Date & Time
+    // // console.log(tableData0[0][2]) // - (Can be ignored)
+    // console.log(tableData0[0][3]) // Departure Date & Time
+    // console.log(tableData0[0][4]) // Company
+    // console.log(tableData0[0][5]) // Vessel Name
+    // // console.log(tableData0[0][6]) // '' (Can be ignored)
 
     // ------------------------------------------------------------------
 
@@ -43,12 +47,14 @@ export const pageScraperObject = {
       })
     })
 
-    console.log(tableData1[0][0]) // Length in metres
-    console.log(tableData1[0][1]) // Number of Passengers
-    console.log(tableData1[0][2]) // Number of crew
-    console.log(tableData1[0][3]) // Name of Agent in Belfast
-    console.log(tableData1[0][4]) // Berth
-    console.log(tableData1[0][5]) // Description
+    // console.log(tableData1[0][0]) // Length in metres
+    // console.log(tableData1[0][1]) // Number of Passengers
+    // console.log(tableData1[0][2]) // Number of crew
+    // console.log(tableData1[0][3]) // Name of Agent in Belfast
+    // console.log(tableData1[0][4]) // Berth
+    // console.log(tableData1[0][5]) // Description
+
+    // ------------------------------------------------------------------
 
     // Fetch the image of the vessel
     // Fetch the src attribute of the first image
