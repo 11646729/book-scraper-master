@@ -1,19 +1,24 @@
-import { scraperObject } from "./pageScraper.js"
+import { pagePreparationObject } from "./pagePreparation.js"
+import { pageScraperObject } from "./pageScraper.js"
 
 const scraperController = async (browserInstance) => {
-  // Load initial Web page
+  // url of Web Page
   const urlString = "https://www.belfast-harbour.co.uk/port/cruise-schedule/"
 
-  let pageVariable = scraperObject.loadInitialWebPage(
+  // Load initial Web page
+  let pageVariable = pagePreparationObject.loadInitialWebPage(
     browserInstance,
     urlString
   )
 
   // Accept all cookies
-  scraperObject.acceptCookies(pageVariable)
+  pagePreparationObject.acceptCookies(pageVariable)
 
   // Load all Next Pages
-  scraperObject.loadNextPages(pageVariable)
+  pagePreparationObject.loadNextPages(pageVariable)
+
+  // Scrape all the vessel details
+  pageScraperObject.scrapeVesselArrivalDetails(pageVariable)
 
   // ------------------------------------------------------------------
 
