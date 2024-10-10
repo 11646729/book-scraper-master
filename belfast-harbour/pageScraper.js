@@ -1,5 +1,5 @@
 export const pageScraperObject = {
-  async scrapeVesselArrivalDetails(pageInstance) {
+  async scrapeVesselArrivalDetails1(pageInstance) {
     let page = await pageInstance
 
     // Wait for the table to load if necessary
@@ -22,16 +22,11 @@ export const pageScraperObject = {
     })
 
     return tableData0
+  },
 
-    // console.log(tableData0[0][0]) // DAY CALL or OVERNIGHT
-    // console.log(tableData0[0][1]) // Arrival Date & Time
-    // // console.log(tableData0[0][2]) // - (Can be ignored)
-    // console.log(tableData0[0][3]) // Departure Date & Time
-    // console.log(tableData0[0][4]) // Company
-    // console.log(tableData0[0][5]) // Vessel Name
-    // // console.log(tableData0[0][6]) // '' (Can be ignored)
-
-    // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  async scrapeVesselArrivalDetails2(pageInstance) {
+    let page = await pageInstance
 
     // Scrape the table data
     const tableData1 = await page.evaluate(() => {
@@ -47,25 +42,20 @@ export const pageScraperObject = {
       })
     })
 
-    // console.log(tableData1[0][0]) // Length in metres
-    // console.log(tableData1[0][1]) // Number of Passengers
-    // console.log(tableData1[0][2]) // Number of crew
-    // console.log(tableData1[0][3]) // Name of Agent in Belfast
-    // console.log(tableData1[0][4]) // Berth
-    // console.log(tableData1[0][5]) // Description
+    return tableData1
+  },
 
-    // ------------------------------------------------------------------
+  // ------------------------------------------------------------------
+  async scrapeVesselArrivalDetails3(pageInstance) {
+    let page = await pageInstance
 
-    // Fetch the image of the vessel
-    // Fetch the src attribute of the first image
-    const vesselImg = await page.evaluate(() => {
-      // Query the first image on the page
-      const img = document.querySelector("#load_data tr:nth-child(4n+2) img")
-
-      // Return the image's src attribute
-      return img ? img.src : null
+    // Fetch the src attribute of the image of the vessel
+    const imgSrcs = await page.evaluate(() => {
+      return Array.from(
+        document.querySelectorAll("#load_data tr:nth-child(4n+2) img")
+      ).map((img) => img.src)
     })
 
-    console.log(vesselImg)
+    return imgSrcs
   },
 }

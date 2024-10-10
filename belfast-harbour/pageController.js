@@ -18,77 +18,37 @@ const scraperController = async (browserInstance) => {
   await pagePreparationObject.loadNextPages(pageVariable)
 
   // Scrape all the vessel details
-  let scrapedArray = await pageScraperObject.scrapeVesselArrivalDetails(
+  let scrapedArray1 = await pageScraperObject.scrapeVesselArrivalDetails1(
     pageVariable
   )
 
-  console.log(scrapedArray)
+  let scrapedArray2 = await pageScraperObject.scrapeVesselArrivalDetails2(
+    pageVariable
+  )
 
-  // ------------------------------------------------------------------
+  let scrapedArray3 = await pageScraperObject.scrapeVesselArrivalDetails3(
+    pageVariable
+  )
 
-  // // Wait for the table to load if necessary
-  // await page.waitForSelector("#load_data")
+  // ARRAY FIELDS
+  // console.log(scrapedArray1[0][0]) // DAY CALL or OVERNIGHT
+  // console.log(scrapedArray1[0]][1]) // Arrival Date & Time
+  // // console.log(scrapedArray1[0][2]) // - (Can be ignored)
+  // console.log(scrapedArray1[0][3]) // Departure Date & Time
+  // console.log(scrapedArray1[0][4]) // Company
+  // console.log(scrapedArray1[0][5]) // Vessel Name
+  // // console.log(scrapedArray1[0][6]) // '' (Can be ignored)
 
-  // // Scrape the table data
-  // const tableData0 = await page.evaluate(() => {
-  //   // Get all the rows from the table
-  //   const rows0 = Array.from(
-  //     document.querySelectorAll("#load_data tr:nth-child(4n+1)")
-  //   )
+  // console.log(scrapedArray2[0][0]) // Vessel Length
+  // console.log(scrapedArray2[0][1]) // Number of Passengers
+  // console.log(scrapedArray2[0][2]) // Number of Crew
+  // console.log(scrapedArray2[0][3]) // Name of Belfast Shipping Agent
+  // console.log(scrapedArray2[0][4]) // Number of Belfast Berth
+  // console.log(scrapedArray2[0][5]) // Vessel Description
 
-  //   // Map through each row and get the cell data
-  //   return rows0.map((row0) => {
-  //     const cells0 = Array.from(row0.querySelectorAll("td")) // day-call or textBlue
-  //     return cells0.map((cell0) => cell0.innerText.trim())
-  //   })
-  // })
+  console.log(scrapedArray3[0]) // Vessel Image
 
-  // console.log(tableData0[0][0]) // DAY CALL or OVERNIGHT
-  // console.log(tableData0[0][1]) // Arrival Date & Time
-  // // console.log(tableData0[0][2]) // - (Can be ignored)
-  // console.log(tableData0[0][3]) // Departure Date & Time
-  // console.log(tableData0[0][4]) // Company
-  // console.log(tableData0[0][5]) // Vessel Name
-  // // console.log(tableData0[0][6]) // '' (Can be ignored)
-
-  // // ------------------------------------------------------------------
-
-  // // Scrape the table data
-  // const tableData1 = await page.evaluate(() => {
-  //   // Get all the rows from the table
-  //   const rows = Array.from(
-  //     document.querySelectorAll("#load_data tr:nth-child(4n+2)")
-  //   )
-
-  //   // Map through each row and get the cell data
-  //   return rows.map((row) => {
-  //     const cells = Array.from(row.querySelectorAll("p"))
-  //     return cells.map((cell) => cell.innerText.trim())
-  //   })
-  // })
-
-  // console.log(tableData1[0][0]) // Length in metres
-  // console.log(tableData1[0][1]) // Number of Passengers
-  // console.log(tableData1[0][2]) // Number of crew
-  // console.log(tableData1[0][3]) // Name of Agent in Belfast
-  // console.log(tableData1[0][4]) // Berth
-  // console.log(tableData1[0][5]) // Description
-
-  // // Fetch the image of the vessel
-  // // Fetch the src attribute of the first image
-  // const vesselImg = await page.evaluate(() => {
-  //   // Query the first image on the page
-  //   const img = document.querySelector("#load_data tr:nth-child(4n+2) img")
-
-  //   // Return the image's src attribute
-  //   return img ? img.src : null
-  // })
-
-  // console.log(vesselImg)
-
-  // // ------------------------------------------------------------------
-
-  // // Close the browser
+  // Close the browser
   // await browser.close()
 }
 
