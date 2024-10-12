@@ -1,5 +1,6 @@
 import { pagePreparationObject } from "./pagePreparation.js"
 import { pageScraperObject } from "./pageScraper.js"
+import moment from "moment"
 
 const scraperController = async (browserInstance) => {
   // url of Web Page
@@ -30,26 +31,96 @@ const scraperController = async (browserInstance) => {
     pageVariable
   )
 
-  // ARRAY FIELDS
-  // console.log(scrapedArray1[0][0]) // DAY CALL or OVERNIGHT
-  // console.log(scrapedArray1[0]][1]) // Arrival Date & Time
-  // // console.log(scrapedArray1[0][2]) // - (Can be ignored)
-  // console.log(scrapedArray1[0][3]) // Departure Date & Time
-  // console.log(scrapedArray1[0][4]) // Company
-  // console.log(scrapedArray1[0][5]) // Vessel Name
-  // // console.log(scrapedArray1[0][6]) // '' (Can be ignored)
-
-  // console.log(scrapedArray2[0][0]) // Vessel Length
-  // console.log(scrapedArray2[0][1]) // Number of Passengers
-  // console.log(scrapedArray2[0][2]) // Number of Crew
-  // console.log(scrapedArray2[0][3]) // Name of Belfast Shipping Agent
-  // console.log(scrapedArray2[0][4]) // Number of Belfast Berth
-  // console.log(scrapedArray2[0][5]) // Vessel Description
-
-  console.log(scrapedArray3[0]) // Vessel Image
+  let finalArray = await scraperArrayFormatter(
+    scrapedArray1,
+    scrapedArray2,
+    scrapedArray3
+  )
 
   // Close the browser
   // await browser.close()
+}
+
+const scraperArrayFormatter = async (
+  scrapedArray1,
+  scrapedArray2,
+  scrapedArray3
+) => {
+  let finalArray = []
+  let vesselMovement = []
+
+  for (let i = 0; i < scrapedArray1.length; i++) {
+    // ---------------------------------------------------------
+
+    // First reformat Arrival times
+    let arrivalDateTimeString = scrapedArray1[i][1]
+
+    // Remove Newline character from within the string
+    arrivalDateTimeString = arrivalDateTimeString.replace(/(\r\n|\n|\r)/gm, "")
+
+    let timeResult = arrivalDateTimeString.substring(
+      arrivalDateTimeString.length - 5
+    )
+
+    let dateResult = arrivalDateTimeString.substring(
+      0,
+      arrivalDateTimeString.length - 5
+    )
+
+    let thisYear = new Date().getFullYear()
+
+    let arrivalDate = dateResult + " " + thisYear.toString()
+
+    // ---------------------------------------------------------
+
+    // First reformat Departure times
+    let departureDateTimeString = scrapedArray1[i][1]
+
+    // Remove Newline character from within the string
+    departureDateTimeString = departureDateTimeString.replace(
+      /(\r\n|\n|\r)/gm,
+      ""
+    )
+
+    let timeResult1 = departureDateTimeString.substring(
+      departureDateTimeString.length - 5
+    )
+
+    let dateResult1 = departureDateTimeString.substring(
+      0,
+      departureDateTimeString.length - 5
+    )
+
+    let thisYear1 = new Date().getFullYear()
+
+    let departureDate = dateResult1 + " " + thisYear1.toString()
+
+    // ---------------------------------------------------------
+
+    vesselMovement.push(scrapedArray1[i][0]) // DAY or OVERNIGHT visit
+    vesselMovement.push(arrivalDate) // Arrival Date & Time
+    vesselMovement.push(departureDate) // Departure Date & Time
+    vesselMovement.push(scrapedArray1[i][4]) // Company
+    vesselMovement.push(scrapedArray1[i][5]) // Vessel Name
+
+    vesselMovement.push(scrapedArray2[i][0]) // Vessel Length
+    vesselMovement.push(scrapedArray2[i][1]) // Number of Passengers
+    vesselMovement.push(scrapedArray2[i][2]) // Number of Crew
+    vesselMovement.push(scrapedArray2[i][3]) // Name of Belfast Shipping Agent
+    vesselMovement.push(scrapedArray2[i][4]) // Number of Belfast Berth
+    vesselMovement.push(scrapedArray2[i][5]) // Vessel Description
+
+    vesselMovement.push(scrapedArray3[i]) // Vessel Image
+
+    finalArray.push(vesselMovement)
+
+    // Clear vesselMovement array
+    vesselMovement = []
+  }
+
+  console.log(finalArray[0])
+
+  return finalArray
 }
 
 export default (browserInstance) => scraperController(browserInstance)
