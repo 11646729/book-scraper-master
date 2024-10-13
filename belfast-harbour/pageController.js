@@ -56,20 +56,47 @@ const scraperArrayFormatter = async (
     let arrivalDateTimeString = scrapedArray1[i][1]
 
     // Remove Newline character from within the string
-    arrivalDateTimeString = arrivalDateTimeString.replace(/(\r\n|\n|\r)/gm, "")
+    arrivalDateTimeString = arrivalDateTimeString.replace(
+      /(\r\n|\n|\r|\s)/gm,
+      ""
+    )
 
     let timeResult = arrivalDateTimeString.substring(
       arrivalDateTimeString.length - 5
     )
 
-    let dateResult = arrivalDateTimeString.substring(
-      0,
+    let dateResult = arrivalDateTimeString.substring(0, 2)
+
+    let monthResult = arrivalDateTimeString.substring(
+      2,
       arrivalDateTimeString.length - 5
     )
 
-    let thisYear = new Date().getFullYear()
+    monthResult = moment().month(monthResult).format("MM")
 
-    let arrivalDate = dateResult + " " + thisYear.toString()
+    let yearResult = new Date().getFullYear()
+
+    let UTCArrivalDate = moment
+      .utc(
+        moment(
+          yearResult +
+            "-" +
+            monthResult +
+            "-" +
+            dateResult +
+            "T" +
+            timeResult +
+            "Z"
+        )
+      )
+      .format()
+
+    // console.log(arrivalDateTimeString)
+    // console.log(timeResult)
+    // console.log(dateResult)
+    // console.log(monthResult)
+    // console.log(yearResult)
+    // console.log(UTCArrivalDate)
 
     // ---------------------------------------------------------
 
@@ -92,13 +119,16 @@ const scraperArrayFormatter = async (
     )
 
     let thisYear1 = new Date().getFullYear()
+    // console.log(thisYear1)
+    // let thisYear2 = new Date().toISOString()
+    // console.log(thisYear2)
 
     let departureDate = dateResult1 + " " + thisYear1.toString()
 
     // ---------------------------------------------------------
 
     vesselMovement.push(scrapedArray1[i][0]) // DAY or OVERNIGHT visit
-    vesselMovement.push(arrivalDate) // Arrival Date & Time
+    vesselMovement.push(UTCArrivalDate) // Arrival Date & Time
     vesselMovement.push(departureDate) // Departure Date & Time
     vesselMovement.push(scrapedArray1[i][4]) // Company
     vesselMovement.push(scrapedArray1[i][5]) // Vessel Name
@@ -118,7 +148,7 @@ const scraperArrayFormatter = async (
     vesselMovement = []
   }
 
-  console.log(finalArray[0])
+  // console.log(finalArray[0])
 
   return finalArray
 }
