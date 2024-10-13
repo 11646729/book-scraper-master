@@ -41,6 +41,7 @@ const scraperController = async (browserInstance) => {
   // await browser.close()
 }
 
+// ------------------------------------------------------------------
 const scraperArrayFormatter = async (
   scrapedArray1,
   scrapedArray2,
@@ -50,86 +51,14 @@ const scraperArrayFormatter = async (
   let vesselMovement = []
 
   for (let i = 0; i < scrapedArray1.length; i++) {
-    // ---------------------------------------------------------
+    // First reformat Arrival & Departure times
+    let UTCArrivalDate = await dateFormatter(scrapedArray1[i][1])
 
-    // First reformat Arrival times
-    let arrivalDateTimeString = scrapedArray1[i][1]
-
-    // Remove Newline character from within the string
-    arrivalDateTimeString = arrivalDateTimeString.replace(
-      /(\r\n|\n|\r|\s)/gm,
-      ""
-    )
-
-    let timeResult = arrivalDateTimeString.substring(
-      arrivalDateTimeString.length - 5
-    )
-
-    let dateResult = arrivalDateTimeString.substring(0, 2)
-
-    let monthResult = arrivalDateTimeString.substring(
-      2,
-      arrivalDateTimeString.length - 5
-    )
-
-    monthResult = moment().month(monthResult).format("MM")
-
-    let yearResult = new Date().getFullYear()
-
-    let UTCArrivalDate = moment
-      .utc(
-        moment(
-          yearResult +
-            "-" +
-            monthResult +
-            "-" +
-            dateResult +
-            "T" +
-            timeResult +
-            "Z"
-        )
-      )
-      .format()
-
-    // console.log(arrivalDateTimeString)
-    // console.log(timeResult)
-    // console.log(dateResult)
-    // console.log(monthResult)
-    // console.log(yearResult)
-    // console.log(UTCArrivalDate)
-
-    // ---------------------------------------------------------
-
-    // First reformat Departure times
-    let departureDateTimeString = scrapedArray1[i][1]
-
-    // Remove Newline character from within the string
-    departureDateTimeString = departureDateTimeString.replace(
-      /(\r\n|\n|\r)/gm,
-      ""
-    )
-
-    let timeResult1 = departureDateTimeString.substring(
-      departureDateTimeString.length - 5
-    )
-
-    let dateResult1 = departureDateTimeString.substring(
-      0,
-      departureDateTimeString.length - 5
-    )
-
-    let thisYear1 = new Date().getFullYear()
-    // console.log(thisYear1)
-    // let thisYear2 = new Date().toISOString()
-    // console.log(thisYear2)
-
-    let departureDate = dateResult1 + " " + thisYear1.toString()
-
-    // ---------------------------------------------------------
+    let UTCDepartureDate = await dateFormatter(scrapedArray1[i][3])
 
     vesselMovement.push(scrapedArray1[i][0]) // DAY or OVERNIGHT visit
     vesselMovement.push(UTCArrivalDate) // Arrival Date & Time
-    vesselMovement.push(departureDate) // Departure Date & Time
+    vesselMovement.push(UTCDepartureDate) // Departure Date & Time
     vesselMovement.push(scrapedArray1[i][4]) // Company
     vesselMovement.push(scrapedArray1[i][5]) // Vessel Name
 
@@ -148,9 +77,53 @@ const scraperArrayFormatter = async (
     vesselMovement = []
   }
 
-  // console.log(finalArray[0])
+  // console.log(finalArray[32])
 
   return finalArray
 }
+
+// ------------------------------------------------------------------
+const dateFormatter = async (scrapedDate) => {
+  let arrivalDateTimeString = await scrapedDate
+
+  // Remove Newline character from within the string
+  arrivalDateTimeString = await arrivalDateTimeString.replace(
+    /(\r\n|\n|\r|\s)/gm,
+    ""
+  )
+
+  let timeResult = await arrivalDateTimeString.substring(
+    arrivalDateTimeString.length - 5
+  )
+
+  let dateResult = await arrivalDateTimeString.substring(0, 2)
+
+  let monthResult = await arrivalDateTimeString.substring(
+    2,
+    arrivalDateTimeString.length - 5
+  )
+
+  monthResult = moment().month(monthResult).format("MM")
+
+  let yearResult = new Date().getFullYear()
+
+  let UTCDate = moment
+    .utc(
+      moment(
+        yearResult +
+          "-" +
+          monthResult +
+          "-" +
+          dateResult +
+          "T" +
+          timeResult +
+          "Z"
+      )
+    )
+    .format()
+
+  return UTCDate
+}
+// ------------------------------------------------------------------
 
 export default (browserInstance) => scraperController(browserInstance)
