@@ -38,7 +38,7 @@ const scraperController = async (browserInstance) => {
   )
 
   // Close the browser
-  // await browser.close()
+  // await browserInstance.close()
 }
 
 // ------------------------------------------------------------------
@@ -77,7 +77,7 @@ const scraperArrayFormatter = async (
     vesselMovement = []
   }
 
-  // console.log(finalArray[32])
+  console.log(finalArray[0])
 
   return finalArray
 }
