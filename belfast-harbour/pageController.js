@@ -7,8 +7,11 @@ const scraperController = async (browserInstance) => {
   const urlString = "https://www.belfast-harbour.co.uk/port/cruise-schedule/"
 
   // Load initial Web page
+  let browser = await browserInstance
+
+  // Load initial Web page
   let pageVariable = await pagePreparationObject.loadInitialWebPage(
-    browserInstance,
+    browser,
     urlString
   )
 
@@ -37,8 +40,10 @@ const scraperController = async (browserInstance) => {
     scrapedArray3
   )
 
+  console.log(finalArray)
+
   // Close the browser
-  // await browserInstance.close()
+  await browser.close()
 }
 
 // ------------------------------------------------------------------
@@ -77,7 +82,7 @@ const scraperArrayFormatter = async (
     vesselMovement = []
   }
 
-  console.log(finalArray[0])
+  // console.log(finalArray[0])
 
   return finalArray
 }
