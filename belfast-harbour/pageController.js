@@ -31,8 +31,6 @@ const scraperController = async (browserInstance) => {
     pageVariable
   )
 
-  // console.log(scrapedArray2[0])
-
   let scrapedArray3 = await pageScraperObject.scrapeVesselArrivalDetails3(
     pageVariable
   )
@@ -42,8 +40,6 @@ const scraperController = async (browserInstance) => {
     scrapedArray2,
     scrapedArray3
   )
-
-  // console.log(finalArray)
 
   // Write finalArray data to file named data.json
   writeFile("data.json", JSON.stringify(finalArray), "utf8", function (err) {
