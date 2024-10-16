@@ -41,17 +41,17 @@ const scraperController = async (browserInstance) => {
     scrapedArray3
   )
 
-  // console.log(finalArray.length)
+  console.log(finalArray)
 
   // Write finalArray data to file named data.json
-  // writeFile("data.json", JSON.stringify(finalArray), "utf8", function (err) {
-  //   if (err) {
-  //     return console.log(err)
-  //   }
-  //   console.log(
-  //     "The data has been scraped and saved successfully! View it at './data.json'"
-  //   )
-  // })
+  writeFile("data.json", JSON.stringify(finalArray), "utf8", function (err) {
+    if (err) {
+      return console.log(err)
+    }
+    console.log(
+      "The data has been scraped and saved successfully! View it at './data.json'"
+    )
+  })
 
   // Close the browser
   await browser.close()
@@ -64,7 +64,6 @@ const scraperArrayFormatter = async (
   scrapedArray3
 ) => {
   let finalArray = []
-  let vesselMovement = []
 
   for (let i = 0; i < scrapedArray1.length; i++) {
     // First reformat Arrival & Departure times
@@ -93,25 +92,25 @@ const scraperArrayFormatter = async (
     }
     // ------------------------------------------------------------------
 
-    vesselMovement.push(scrapedArray1[i][0]) // DAY or OVERNIGHT visit
-    vesselMovement.push(UTCArrivalDate) // Arrival Date & Time
-    vesselMovement.push(UTCDepartureDate) // Departure Date & Time
-    vesselMovement.push(scrapedArray1[i][4]) // Company
-    vesselMovement.push(scrapedArray1[i][5]) // Vessel Name
+    var cruiseShipMovement = {
+      visitDuration: scrapedArray1[i][0],
+      arrivalDate: UTCArrivalDate,
+      departureDate: UTCDepartureDate,
+      vesselCompany: scrapedArray1[i][4],
+      vesselName: scrapedArray1[i][5],
+      vesselLength: scrapedArray2[i][0],
+      numberOfPassengers: scrapedArray2[i][1],
+      numberOfCrew: scrapedArray2[i][2],
+      handlingCompany: scrapedArray2[i][3],
+      numberOfBerth: scrapedArray2[i][4],
+      vesselDescription: scrapedArray2[i][5],
+      vesselImage: scrapedArray3[i],
+    }
 
-    vesselMovement.push(scrapedArray2[i][0]) // Vessel Length
-    vesselMovement.push(scrapedArray2[i][1]) // Number of Passengers
-    vesselMovement.push(scrapedArray2[i][2]) // Number of Crew
-    vesselMovement.push(scrapedArray2[i][3]) // Name of Belfast Shipping Agent
-    vesselMovement.push(scrapedArray2[i][4]) // Number of Belfast Berth
-    vesselMovement.push(scrapedArray2[i][5]) // Vessel Description
-
-    vesselMovement.push(scrapedArray3[i]) // Vessel Image
-
-    finalArray.push(vesselMovement)
+    finalArray.push(cruiseShipMovement)
 
     // Clear vesselMovement array
-    vesselMovement = []
+    // vesselMovement = []
   }
 
   return finalArray
