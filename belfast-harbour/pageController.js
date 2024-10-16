@@ -31,6 +31,8 @@ const scraperController = async (browserInstance) => {
     pageVariable
   )
 
+  // console.log(scrapedArray2[0])
+
   let scrapedArray3 = await pageScraperObject.scrapeVesselArrivalDetails3(
     pageVariable
   )
@@ -41,7 +43,7 @@ const scraperController = async (browserInstance) => {
     scrapedArray3
   )
 
-  console.log(finalArray)
+  // console.log(finalArray)
 
   // Write finalArray data to file named data.json
   writeFile("data.json", JSON.stringify(finalArray), "utf8", function (err) {
@@ -92,25 +94,28 @@ const scraperArrayFormatter = async (
     }
     // ------------------------------------------------------------------
 
+    let VesselLength = await textFormatter(scrapedArray2[i][0])
+    let NumberOfPassengers = await textFormatter(scrapedArray2[i][1])
+    let NumberOfCrew = await textFormatter(scrapedArray2[i][2])
+    let HandlingAgent = await textFormatter(scrapedArray2[i][3])
+    let NameOfBerth = await textFormatter(scrapedArray2[i][4])
+
     var cruiseShipMovement = {
       visitDuration: scrapedArray1[i][0],
       arrivalDate: UTCArrivalDate,
       departureDate: UTCDepartureDate,
       vesselCompany: scrapedArray1[i][4],
       vesselName: scrapedArray1[i][5],
-      vesselLength: scrapedArray2[i][0],
-      numberOfPassengers: scrapedArray2[i][1],
-      numberOfCrew: scrapedArray2[i][2],
-      handlingCompany: scrapedArray2[i][3],
-      numberOfBerth: scrapedArray2[i][4],
+      vesselLength: VesselLength,
+      numberOfPassengers: NumberOfPassengers,
+      numberOfCrew: NumberOfCrew,
+      handlingAgent: HandlingAgent,
+      numberOfBerth: NameOfBerth,
       vesselDescription: scrapedArray2[i][5],
       vesselImage: scrapedArray3[i],
     }
 
     finalArray.push(cruiseShipMovement)
-
-    // Clear vesselMovement array
-    // vesselMovement = []
   }
 
   return finalArray
@@ -158,6 +163,18 @@ const dateFormatter = async (scrapedDate) => {
 
   return UTCDate
 }
+
+// ------------------------------------------------------------------
+const textFormatter = async (scrapedText) => {
+  let scrapedTextString = await scrapedText
+
+  // Remove Newline, Space etc characters from within the string
+  let reformattedText = await scrapedTextString.replace(/(\r\n|\n|\r|\s)/gm, "")
+  reformattedText = await reformattedText.split(":")[1]
+
+  return reformattedText
+}
+
 // ------------------------------------------------------------------
 
 export default (browserInstance) => scraperController(browserInstance)
