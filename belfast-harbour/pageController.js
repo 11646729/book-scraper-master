@@ -44,14 +44,14 @@ const scraperController = async (browserInstance) => {
   // console.log(finalArray.length)
 
   // Write finalArray data to file named data.json
-  writeFile("data.json", JSON.stringify(finalArray), "utf8", function (err) {
-    if (err) {
-      return console.log(err)
-    }
-    console.log(
-      "The data has been scraped and saved successfully! View it at './data.json'"
-    )
-  })
+  // writeFile("data.json", JSON.stringify(finalArray), "utf8", function (err) {
+  //   if (err) {
+  //     return console.log(err)
+  //   }
+  //   console.log(
+  //     "The data has been scraped and saved successfully! View it at './data.json'"
+  //   )
+  // })
 
   // Close the browser
   await browser.close()
@@ -68,33 +68,30 @@ const scraperArrayFormatter = async (
 
   for (let i = 0; i < scrapedArray1.length; i++) {
     // First reformat Arrival & Departure times
+    let lengthOfStay = await scrapedArray1[i][0]
+
     let UTCArrivalDate = await dateFormatter(scrapedArray1[i][1])
 
     let UTCDepartureDate = await dateFormatter(scrapedArray1[i][3])
 
-    const d = new Date(UTCArrivalDate)
-    let month = d.getUTCMonth() // January = 0
+    // ------------------------------------------------------------------
+    // Now fix end of year overnight arrival not increasing the year in the departure data
+    if (lengthOfStay == "OVERNIGHT") {
+      let d = new Date(UTCArrivalDate)
+      let month = d.getUTCMonth() // Zero based array
+      let date = d.getDate() // Zero based array
 
-    console.log(UTCArrivalDate)
-    console.log(month == 9)
+      if (month == 11 && date == 30) {
+        console.log(
+          "Modifying OVERNIGHT Year in departure date if vessel arrives on 31st December"
+        )
 
-    const dr = new Date(UTCArrivalDate)
-    let date = dr.getDate()
-    console.log(date == 28)
-
-    if (month == 9 && date == 28) {
-      console.log("Add 1 day to UTCArrivalDate")
+        console.log("Add 1 day to UTCArrivalDate to correct UTCDepartureDate")
+        d.setUTCDate(date + 1)
+        UTCDepartureDate = d.toISOString()
+      }
     }
-
-    // // The built–in parser parses it as UTC by default
-    // let d = new Date(UTCArrivalDate)
-    // // 2024-03-11T00:00:00.000Z
-    // console.log(d.toISOString())
-
-    // // Add 1 to the day
-    // d.setUTCDate(d.getUTCDate() + 65)
-    // // 2024-03-12T00:00:00.000Z
-    // console.log(d.toISOString())
+    // ------------------------------------------------------------------
 
     vesselMovement.push(scrapedArray1[i][0]) // DAY or OVERNIGHT visit
     vesselMovement.push(UTCArrivalDate) // Arrival Date & Time
