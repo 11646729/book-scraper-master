@@ -1,5 +1,6 @@
 import { pagePreparationObject } from "./pagePreparation.js"
 import { pageScraperObject } from "./pageScraper.js"
+import { writeFile } from "fs"
 import moment from "moment"
 
 const scraperController = async (browserInstance) => {
@@ -40,7 +41,17 @@ const scraperController = async (browserInstance) => {
     scrapedArray3
   )
 
-  console.log(finalArray)
+  // console.log(finalArray.length)
+
+  // Write finalArray data to file named data.json
+  writeFile("data.json", JSON.stringify(finalArray), "utf8", function (err) {
+    if (err) {
+      return console.log(err)
+    }
+    console.log(
+      "The data has been scraped and saved successfully! View it at './data.json'"
+    )
+  })
 
   // Close the browser
   await browser.close()
@@ -60,6 +71,30 @@ const scraperArrayFormatter = async (
     let UTCArrivalDate = await dateFormatter(scrapedArray1[i][1])
 
     let UTCDepartureDate = await dateFormatter(scrapedArray1[i][3])
+
+    const d = new Date(UTCArrivalDate)
+    let month = d.getUTCMonth() // January = 0
+
+    console.log(UTCArrivalDate)
+    console.log(month == 9)
+
+    const dr = new Date(UTCArrivalDate)
+    let date = dr.getDate()
+    console.log(date == 28)
+
+    if (month == 9 && date == 28) {
+      console.log("Add 1 day to UTCArrivalDate")
+    }
+
+    // // The built–in parser parses it as UTC by default
+    // let d = new Date(UTCArrivalDate)
+    // // 2024-03-11T00:00:00.000Z
+    // console.log(d.toISOString())
+
+    // // Add 1 to the day
+    // d.setUTCDate(d.getUTCDate() + 65)
+    // // 2024-03-12T00:00:00.000Z
+    // console.log(d.toISOString())
 
     vesselMovement.push(scrapedArray1[i][0]) // DAY or OVERNIGHT visit
     vesselMovement.push(UTCArrivalDate) // Arrival Date & Time
@@ -81,8 +116,6 @@ const scraperArrayFormatter = async (
     // Clear vesselMovement array
     vesselMovement = []
   }
-
-  // console.log(finalArray[0])
 
   return finalArray
 }
